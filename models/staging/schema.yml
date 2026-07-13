@@ -1,0 +1,284 @@
+version: 2
+
+models:
+  - name: stg_brands
+    description: "Staging model containing bike brand."
+    columns:
+      - name: brand_id
+        description: "Primary key of the brand."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: brand_name
+        data_tests:
+          - not_null
+
+
+  - name: stg_categories
+    description: "Staging model containing product category."
+    columns:
+      - name: category_id
+        description: "Primary key of the product category."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: category_name
+        data_tests:
+          - not_null
+
+
+  - name: stg_customers
+    description: "Staging model containing customer contact and location data."
+    columns:
+      - name: customer_id
+        description: "Primary key of the customer."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: first_name
+        data_tests:
+          - not_null
+
+      - name: last_name
+        data_tests:
+          - not_null
+
+      - name: email
+        data_tests:
+          - not_null
+
+
+  - name: stg_products
+    description: "Staging model containing the product catalogue and its brand and category references."
+    columns:
+      - name: product_id
+        description: "Primary key of the product."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: product_name
+        data_tests:
+          - not_null
+
+      - name: brand_id
+        description: "Foreign key referencing the product brand."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_brands')
+                field: brand_id
+
+      - name: category_id
+        description: "Foreign key referencing the product category."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_categories')
+                field: category_id
+
+      - name: model_year
+        description: "Year associated with the product model."
+        data_tests:
+          - not_null
+
+      - name: list_price
+        description: "Catalogue price of the product before any discount."
+        data_tests:
+          - not_null
+
+
+  - name: stg_stores
+    description: "Staging model containing retail store contact and location data."
+    columns:
+      - name: store_id
+        description: "Primary key of the store."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: store_name
+        data_tests:
+          - not_null
+
+
+  - name: stg_staffs
+    description: "Staging model containing staff members, their assigned stores and management hierarchy."
+    columns:
+      - name: staff_id
+        description: "Primary key of the staff member."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: first_name
+        data_tests:
+          - not_null
+
+      - name: last_name
+        data_tests:
+          - not_null
+
+      - name: active
+        description: "Indicates whether the staff member is currently active."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+
+      - name: store_id
+        description: "Foreign key referencing the store where the staff member works."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_stores')
+                field: store_id
+
+      - name: manager_id
+        description: "Foreign key referencing the staff member's manager. Can be null for top-level managers."
+
+
+  - name: stg_orders
+    description: "Staging model containing customer orders and their operational status."
+    columns:
+      - name: order_id
+        description: "Primary key of the order."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        description: "Foreign key referencing the customer who placed the order."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+
+      - name: order_status
+        description: "Lifecycle status of the order: 1 pending, 2 processing, 3 rejected and 4 completed."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4]
+
+      - name: order_date
+        description: "Date on which the order was placed."
+        data_tests:
+          - not_null
+
+      - name: required_date
+        description: "Date by which the customer expects the order to be fulfilled."
+        data_tests:
+          - not_null
+
+      - name: shipped_date
+        description: "Date on which the order was shipped. It can be null for unshipped orders."
+
+      - name: store_id
+        description: "Foreign key referencing the store responsible for the order."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_stores')
+                field: store_id
+
+      - name: staff_id
+        description: "Foreign key referencing the staff member responsible for the order."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_staffs')
+                field: staff_id
+
+
+  - name: stg_order_items
+    description: "Staging model containing individual product lines within customer orders."
+    columns:
+      - name: order_item_sk
+        description: "Surrogate key uniquely identifying an order line."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        description: "Part of the composite key and foreign key referencing the related order."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: item_id
+        description: "Part of the composite key identifying a line within an order."
+        data_tests:
+          - not_null
+
+      - name: product_id
+        description: "Foreign key referencing the ordered product."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+
+      - name: quantity
+        description: "Number of product units included in the order line."
+        data_tests:
+          - not_null
+
+      - name: list_price
+        description: "Unit price recorded when the order was placed."
+        data_tests:
+          - not_null
+
+      - name: discount
+        description: "Discount rate applied to the order line, expressed between 0 and 1."
+        data_tests:
+          - not_null
+
+
+  - name: stg_stocks
+    description: "Staging model containing the available quantity of each product by store."
+    columns:
+      - name: stock_sk
+        description: "Surrogate key uniquely identifying a product inventory record."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: store_id
+        description: "Part of the composite key and foreign key referencing the store."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_stores')
+                field: store_id
+
+      - name: product_id
+        description: "Part of the composite key and foreign key referencing the product."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+
+      - name: quantity
+        description: "Current quantity of the product available in the store."
+        data_tests:
+          - not_null
