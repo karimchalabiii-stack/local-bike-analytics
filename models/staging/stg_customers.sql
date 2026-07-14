@@ -4,8 +4,8 @@ select
     phone,
     state,
     street,
-    zip_code,
+    safe_cast(zip_code as string) as zip_code,
     last_name,
     first_name,
-    customer_id
+    safe_cast(customer_id as int64) as customer_id
 from {{ source('raw_local_bike', 'customers') }}

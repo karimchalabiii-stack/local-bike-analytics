@@ -131,6 +131,7 @@ models:
           - accepted_values:
               arguments:
                 values: [0, 1]
+                quote: false
 
       - name: store_id
         description: "Foreign key referencing the store where the staff member works."
@@ -164,12 +165,13 @@ models:
                 field: customer_id
 
       - name: order_status
-        description: "Lifecycle status of the order: 1 pending, 2 processing, 3 rejected and 4 completed."
+        description: "Lifecycle status of the order."
         data_tests:
           - not_null
           - accepted_values:
               arguments:
                 values: [1, 2, 3, 4]
+                quote: false
 
       - name: order_date
         description: "Date on which the order was placed."
