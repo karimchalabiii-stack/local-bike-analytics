@@ -25,21 +25,38 @@ models:
         description: "Foreign key referencing the sold product."
         data_tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
 
       - name: customer_id
-        description: "Identifier of the customer who placed the order."
+        description: "Foreign key referencing the customer who placed the order."
         data_tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
+
 
       - name: store_id
-        description: "Identifier of the store associated with the sale."
+        description: "Foreign key referencing the store associated with the sale."
         data_tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_stores')
+                field: store_id
 
       - name: staff_id
-        description: "Identifier of the staff member responsible for the sale."
+        description: "Foreign key referencing the staff member responsible for the sale."
         data_tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_staffs')
+                field: staff_id
 
       - name: order_status
         description: "Lifecycle status of the related order."

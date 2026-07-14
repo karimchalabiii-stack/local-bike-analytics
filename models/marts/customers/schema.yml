@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Customer dimension containing contact and geographic attributes."
+
+    columns:
+      - name: customer_id
+        description: "Primary key of the customer."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: customer_full_name
+        description: "Full customer name built from the first and last names."
+        data_tests:
+          - not_null
+
+      - name: state
+        description: "Customer state used for geographic sales analysis."
+
+      - name: zip_code
+        description: "Customer postal code stored as text."

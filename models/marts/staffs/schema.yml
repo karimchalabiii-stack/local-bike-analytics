@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: dim_staffs
+    description: "Staff dimension enriched with the assigned store."
+
+    columns:
+      - name: staff_id
+        description: "Primary key of the staff member."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: staff_full_name
+        description: "Full staff member name."
+        data_tests:
+          - not_null
+
+      - name: active
+        description: "Indicates whether the staff member is currently active."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+
+      - name: store_id
+        description: "Foreign key referencing the staff member's assigned store."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_stores')
+                field: store_id
+
+      - name: manager_id
+        description: "Identifier of the staff member's manager. Can be null for top-level managers."
