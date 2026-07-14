@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: dim_stores
+    description: "Store dimension containing retail location and contact attributes."
+
+    columns:
+      - name: store_id
+        description: "Primary key of the store."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: store_name
+        data_tests:
+          - not_null
+
+      - name: state
+        description: "State in which the store operates."
