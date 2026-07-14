@@ -36,4 +36,17 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 
 models:
-  local_bike_analytics: {}
+  local_bike_analytics:
+
+    staging:
+      +materialized: view
+
+    intermediate:
+      +materialized: view
+
+    marts:
+      +materialized: table
+
+      +persist_docs:
+        relation: true
+        columns: true
