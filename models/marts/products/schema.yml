@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: "Product dimension enriched with brand and category attributes."
+
+    columns:
+      - name: product_id
+        description: "Primary key of the product."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: product_name
+        description: "Name of the product."
+        data_tests:
+          - not_null
+
+      - name: brand_name
+        description: "Brand associated with the product."
+        data_tests:
+          - not_null
+
+      - name: category_name
+        description: "Category associated with the product."
+        data_tests:
+          - not_null
+
+      - name: model_year
+        description: "Model year of the product."
+        data_tests:
+          - not_null
+
+      - name: product_list_price
+        description: "Catalogue price of the product before any discount."
+        data_tests:
+          - not_null
